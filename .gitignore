@@ -1,0 +1,52 @@
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Local environment variables
+.env
+*.env
+
+# Django database and migrations (optional for your case)
+db.sqlite3
+
+# Media/static (if collected locally)
+media/
+staticfiles/
+static/
+
+# Logs and runtime files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.coverage
+.coverage
+htmlcov/
+
+# Build and dist artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Docker artifacts
+*.pid
+docker-compose.override.yml

@@ -1,0 +1,46 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Ignore virtual environments
+venv/
+env/
+.venv/
+
+# Ignore local environment files
+.env
+*.env
+
+# Ignore Django and coverage files
+db.sqlite3
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Ignore IDE / Editor settings
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore test artifacts and coverage reports
+.coverage
+htmlcov/
+*.cov
+*.egg-info/
+dist/
+build/
+
+# Git and docs
+.git/
+.gitignore
+README.md

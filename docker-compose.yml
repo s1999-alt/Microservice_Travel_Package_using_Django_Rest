@@ -1,0 +1,108 @@
+version: '3.9'
+
+services:
+  user_service:
+    build: ./user_service
+    container_name: user_service
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env.shared
+      - ./user_service/.env
+    volumes:
+      - ./user_service:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    restart: always
+    env_file:
+      - ./user_service/.env
+    volumes:
+      - user_postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  
+  
+  package_service:
+    build: ./package_service
+    container_name: package_service
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env.shared
+      - ./package_service/.env
+    volumes:
+      - ./package_service:/app
+    depends_on:
+      - package_db
+  
+  package_db:
+    image: postgres:15
+    restart: always
+    env_file:
+      - ./package_service/.env
+    volumes:
+      - package_postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  
+
+  booking_service:
+    build: ./booking_service
+    container_name: booking_service
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env.shared
+      - ./booking_service/.env
+    volumes:
+      - ./booking_service:/app
+    depends_on:
+      - booking_db
+  
+  booking_db:
+    image: postgres:15
+    restart: always
+    env_file:
+      - ./booking_service/.env
+    volumes:
+      - booking_postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user_service
+      - package_service
+      - booking_service
+    
+volumes:
+  user_postgres_data:
+  package_postgres_data:
+  booking_postgres_data:
