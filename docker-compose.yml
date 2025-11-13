@@ -1,7 +1,11 @@
 version: '3.9'
 
+networks:
+  travel_net:
+    driver: bridge
+
 services:
-  user_service:
+  user-service:
     build: ./user_service
     container_name: user_service
     command: >
@@ -15,6 +19,8 @@ services:
       - ./user_service:/app
     depends_on:
       - db
+    networks:
+      - travel_net
 
   db:
     image: postgres:15
@@ -28,10 +34,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - travel_net
 
-  
-  
-  package_service:
+  package-service:
     build: ./package_service
     container_name: package_service
     command: >
@@ -45,7 +51,9 @@ services:
       - ./package_service:/app
     depends_on:
       - package_db
-  
+    networks:
+      - travel_net
+
   package_db:
     image: postgres:15
     restart: always
@@ -58,10 +66,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - travel_net
 
-  
-
-  booking_service:
+  booking-service:
     build: ./booking_service
     container_name: booking_service
     command: >
@@ -75,7 +83,9 @@ services:
       - ./booking_service:/app
     depends_on:
       - booking_db
-  
+    networks:
+      - travel_net
+
   booking_db:
     image: postgres:15
     restart: always
@@ -88,7 +98,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
+    networks:
+      - travel_net
 
   nginx:
     image: nginx:latest
@@ -98,11 +109,14 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - user_service
-      - package_service
-      - booking_service
-    
+      - user-service
+      - package-service
+      - booking-service
+    networks:
+      - travel_net
+
 volumes:
   user_postgres_data:
   package_postgres_data:
   booking_postgres_data:
+

@@ -13,10 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 allowed_hosts_str = os.getenv('ALLOWED_HOSTS', '')
-if allowed_hosts_str:
-    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(',')]
-else:
-    ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_str.split(',')] if allowed_hosts_str else ['localhost']
 
 
 # Application definition
@@ -121,9 +118,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 

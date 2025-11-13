@@ -12,6 +12,7 @@ env/
 # Local environment variables
 .env
 *.env
+.env.shared
 
 # Django database and migrations (optional for your case)
 db.sqlite3
