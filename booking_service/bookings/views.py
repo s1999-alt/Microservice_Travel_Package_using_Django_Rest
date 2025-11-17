@@ -13,7 +13,7 @@ PACKAGE_SERVICE_URL = "http://package-service:8000/api/packages/package/"
 
 
 class BookingListCreateAPIView(APIView):
-  permission_classes = []
+  permission_classes = [IsAuthenticated]
 
   def get(self, request):
     bookings = Booking.objects.all()
@@ -26,13 +26,13 @@ class BookingListCreateAPIView(APIView):
     1. User exists via User Service
     2. Package exists via Package Service
     """
-    user_id = request.data.get('user_id')
-    print("user_id---------------------------", user_id)
+    
+    # user_id = request.data.get('user_id')
+    user_id = request.user.id
     package_id = request.data.get('package_id')
 
     # Step 1: Verify User
     user_response =  requests.get(f"{USER_SERVICE_URL}{user_id}/")
-    print("user_response777777777777777777",user_response)
     if user_response.status_code != 200:
       return Response({"error": "Invalid User"}, status=status.HTTP_400_BAD_REQUEST)
     
