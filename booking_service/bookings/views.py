@@ -6,6 +6,7 @@ from .models import Booking
 from .serializers import BookingSerializer
 import requests
 from django.shortcuts import get_object_or_404
+from .tasks_producer import send_booking_notification
 
 
 USER_SERVICE_URL = "http://user-service:8000/api/users/"
@@ -35,6 +36,9 @@ class BookingListCreateAPIView(APIView):
     user_response =  requests.get(f"{USER_SERVICE_URL}{user_id}/")
     if user_response.status_code != 200:
       return Response({"error": "Invalid User"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user_data = user_response.json()
+    user_email = user_data.get("email")
     
     # Step 2: Verify Package
     package_response = requests.get(f"{PACKAGE_SERVICE_URL}{package_id}/")
@@ -42,6 +46,7 @@ class BookingListCreateAPIView(APIView):
       return Response({"error": "Inavalid Package"}, status=status.HTTP_400_BAD_REQUEST)
     
     package_data = package_response.json()
+    package_name = package_data.get("name")
     total_price = package_data.get('price', 0.0)
   
     # Step 3: Create Booking
@@ -49,6 +54,12 @@ class BookingListCreateAPIView(APIView):
       user_id=user_id,
       package_id=package_id,
       total_price=total_price,
+    )
+
+    send_booking_notification(
+      email = user_email,
+      package_name = package_name,
+      booking_id = booking.id
     )
     serializer = BookingSerializer(booking)
     return Response(serializer.data, status=status.HTTP_201_CREATED)

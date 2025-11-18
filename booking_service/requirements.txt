@@ -3,3 +3,5 @@ djangorestframework
 psycopg2-binary
 requests
 djangorestframework-simplejwt
+celery==5.3
+redis>=5.0
